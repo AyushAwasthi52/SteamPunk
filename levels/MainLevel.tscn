@@ -55,6 +55,24 @@ counter_id = "shredder"
 prompt_text = "Press E to Shred Document"
 counter_color = Color(0.3, 0.3, 0.3, 1)
 
+[node name="NotaryDesk" parent="." instance=ExtResource("3_counter")]
+position = Vector2(-200, 300)
+counter_id = "notary_desk"
+prompt_text = "Press E to get Notary Signature"
+counter_color = Color(0.9, 0.9, 0.2, 1)
+
+[node name="CallBell" parent="." instance=ExtResource("3_counter")]
+position = Vector2(-300, 300)
+counter_id = "call_bell"
+prompt_text = "Press E to Ring Bell"
+counter_color = Color(1.0, 0.8, 0.0, 1)
+
+[node name="SupplyCloset" parent="." instance=ExtResource("3_counter")]
+position = Vector2(400, 300)
+counter_id = "supply_closet"
+prompt_text = "Press E to Search Supply Closet"
+counter_color = Color(0.2, 0.2, 0.6, 1)
+
 [node name="Inspector" parent="." instance=ExtResource("5_insp")]
 position = Vector2(0, 0)
 speed = 150.0

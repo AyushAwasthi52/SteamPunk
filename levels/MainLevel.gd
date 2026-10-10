@@ -6,7 +6,7 @@ var inventory: Array[String] = []
 var current_objective: int = 0
 
 # Timer System
-var time_left: float = 252.0 # 4 minutes 12 seconds
+var time_left: float = 480.0 # 8 minutes
 
 # Queue System
 var serving_number: int = 14
@@ -21,6 +21,10 @@ var boiler_pressure: float = 0.0
 var boiler_stabilized: bool = false
 var boiler_stable_time: float = 0.0
 
+# Notary System
+var bell_rings: int = 0
+var notary_awake: bool = false
+
 func _ready() -> void:
     for child in get_children():
         if child is Area2D and child.has_signal("interacted"):
@@ -32,7 +36,6 @@ func _ready() -> void:
     hud.update_timer(time_left)
 
 func _process(delta: float) -> void:
-    # Timer
     if time_left > 0:
         time_left -= delta
         if time_left <= 0:
@@ -41,7 +44,6 @@ func _process(delta: float) -> void:
             get_tree().paused = true
     hud.update_timer(time_left)
     
-    # Queue progression
     if queue_active:
         time_since_last_serve += delta
         if time_since_last_serve >= serve_interval:
@@ -58,7 +60,6 @@ func _process(delta: float) -> void:
                     player_ticket = 0
                     hud.update_queue(serving_number, player_ticket)
 
-    # Boiler mechanics
     if current_objective == 2 and not boiler_stabilized:
         boiler_pressure -= 15.0 * delta
         if boiler_pressure < 0:
@@ -80,17 +81,18 @@ func inspector_caught_player() -> void:
     time_left -= 15.0
     hud.show_notification("INSPECTOR: NO RUNNING! 15 seconds docked!")
     
-    # Confiscate forms if they have them
     if "form_27b" in inventory or "stamped_form_27b" in inventory:
         inventory.clear()
         $Player.is_encumbered = false
+        $Player.is_extremely_encumbered = false
         queue_active = true
         current_objective = 0
         update_objective()
         hud.show_notification("INSPECTOR: Contraband paperwork confiscated! Back to the line!")
-    elif "form_27b_rev2" in inventory or "stamped_form_27b_rev2" in inventory:
+    elif "form_27b_rev2" in inventory or "stamped_form_27b_rev2" in inventory or "signed_form_27b_rev2" in inventory:
         inventory.clear()
         $Player.is_encumbered = false
+        $Player.is_extremely_encumbered = false
         queue_active = true
         current_objective = 5
         update_objective()
@@ -115,6 +117,16 @@ func update_objective() -> void:
         7:
             hud.objective_label.text = "Objective: Submit Stamped Form to the Permit Registry."
         8:
+            hud.objective_label.text = "Objective: Form rejected! You need a Notary Signature."
+        9:
+            hud.objective_label.text = "Objective: The Notary is asleep. Ring the bell 20 times!"
+        10:
+            hud.objective_label.text = "Objective: The Notary needs a Blue Ink Pen from the Supply Closet."
+        11:
+            hud.objective_label.text = "Objective: Drag the 200lb Ink Pen back to the Notary."
+        12:
+            hud.objective_label.text = "Objective: Take Signed Form to the Permit Registry (For Real)."
+        13:
             hud.objective_label.text = "Objective: You got the permit! But the machine is out of order."
 
 func _on_counter_entered(prompt: String) -> void:
@@ -174,7 +186,7 @@ func _on_counter_interacted(counter_id: String) -> void:
             elif current_objective == 3 and "form_27b" in inventory:
                 hud.show_notification("Clerk: 'Form 27-B was obsoleted at noon. Go shred it and get Rev2.'")
                 current_objective = 4
-                queue_active = true # Reactivate queue for the second pass
+                queue_active = true
                 update_objective()
             elif current_objective == 6 and "form_27b_rev2" in inventory:
                 inventory.erase("form_27b_rev2")
@@ -211,12 +223,61 @@ func _on_counter_interacted(counter_id: String) -> void:
 
         "permit_registry":
             if current_objective == 7 and "stamped_form_27b_rev2" in inventory:
-                inventory.erase("stamped_form_27b_rev2")
-                inventory.append("permit")
+                hud.show_notification("Registry Clerk: 'Missing Notary Signature. Go to the Notary.'")
                 current_objective = 8
+                update_objective()
+            elif current_objective == 12 and "signed_form_27b_rev2" in inventory:
+                inventory.erase("signed_form_27b_rev2")
+                inventory.append("permit")
+                current_objective = 13
                 $Player.is_encumbered = false
+                $Player.is_extremely_encumbered = false
                 hud.show_notification("Permit granted. Note: The machine has been broken since 1847.")
                 update_objective()
                 queue_active = false
             else:
                 hud.show_notification("Incomplete paperwork. Denied.")
+                
+        "notary_desk":
+            if current_objective == 8:
+                hud.show_notification("Notary: 'Zzz...' (They are asleep)")
+                current_objective = 9
+                update_objective()
+            elif current_objective == 9:
+                if notary_awake:
+                    hud.show_notification("Notary: 'My pen is out of ink. Go get the Blue Ink from Supply Closet.'")
+                    current_objective = 10
+                    update_objective()
+                else:
+                    hud.show_notification("Notary: 'Zzz...' (Use the Call Bell to wake them)")
+            elif current_objective == 11 and "blue_ink_pen" in inventory:
+                inventory.erase("blue_ink_pen")
+                inventory.erase("stamped_form_27b_rev2")
+                inventory.append("signed_form_27b_rev2")
+                current_objective = 12
+                $Player.is_extremely_encumbered = false
+                hud.show_notification("Notary: *Scribble* Done. Take it away.")
+                update_objective()
+            else:
+                hud.show_notification("The Notary ignores you.")
+                
+        "call_bell":
+            if current_objective == 9 and not notary_awake:
+                bell_rings += 1
+                if bell_rings >= 20:
+                    notary_awake = true
+                    hud.show_notification("Notary: 'AH! I'm awake! What do you want?!'")
+                else:
+                    hud.show_notification("*DING* (Rung %d/20 times)" % bell_rings)
+            else:
+                hud.show_notification("Please do not ring the bell unnecessarily.")
+                
+        "supply_closet":
+            if current_objective == 10:
+                inventory.append("blue_ink_pen")
+                current_objective = 11
+                $Player.is_extremely_encumbered = true
+                hud.show_notification("You found the Blue Ink Pen. It is a 200lb cast-iron ink barrel.")
+                update_objective()
+            else:
+                hud.show_notification("The closet is locked.")

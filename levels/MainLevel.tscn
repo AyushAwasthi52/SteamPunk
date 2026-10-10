@@ -42,4 +42,10 @@ counter_id = "permit_registry"
 prompt_text = "Press E to submit Stamped Form"
 counter_color = Color(0.5, 0.2, 0.8, 1)
 
+[node name="Boiler" parent="." instance=ExtResource("3_counter")]
+position = Vector2(400, 100)
+counter_id = "boiler"
+prompt_text = "Press E to Pump Boiler Pressure"
+counter_color = Color(0.8, 0.4, 0.0, 1)
+
 [node name="HUD" parent="." instance=ExtResource("4_hud")]

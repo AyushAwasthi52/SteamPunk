@@ -6,15 +6,20 @@ var inventory: Array[String] = []
 var current_objective: int = 0
 
 # Timer System
-var time_left: float = 120.0 # 2 minutes to complete the game! Very stressful.
+var time_left: float = 120.0 # 2 minutes
 
 # Queue System
 var serving_number: int = 14
 var next_ticket_to_dispense: int = 23
 var player_ticket: int = 0
 var time_since_last_serve: float = 0.0
-var serve_interval: float = 2.0 # Fast queue to make missing it easy
+var serve_interval: float = 2.0
 var queue_active: bool = true
+
+# Boiler System
+var boiler_pressure: float = 0.0
+var boiler_stabilized: bool = false
+var boiler_stable_time: float = 0.0
 
 func _ready() -> void:
     for child in get_children():
@@ -33,7 +38,7 @@ func _process(delta: float) -> void:
         if time_left <= 0:
             time_left = 0
             hud.show_notification("The Ministry is now closed. Come back tomorrow.")
-            get_tree().paused = true # Stop the game
+            get_tree().paused = true
     hud.update_timer(time_left)
     
     # Queue progression
@@ -44,7 +49,6 @@ func _process(delta: float) -> void:
             if serving_number < next_ticket_to_dispense:
                 serving_number += 1
                 hud.update_queue(serving_number, player_ticket)
-                # Randomize next interval for annoyance (1.5 to 4.5 seconds)
                 serve_interval = randf_range(1.5, 4.5)
                 
                 if serving_number == player_ticket:
@@ -54,6 +58,24 @@ func _process(delta: float) -> void:
                     player_ticket = 0
                     hud.update_queue(serving_number, player_ticket)
 
+    # Boiler mechanics
+    if current_objective == 2 and not boiler_stabilized:
+        boiler_pressure -= 15.0 * delta # Decays by 15 per second
+        if boiler_pressure < 0:
+            boiler_pressure = 0
+        
+        if boiler_pressure >= 80.0 and boiler_pressure <= 100.0:
+            boiler_stable_time += delta
+            if boiler_stable_time >= 3.0:
+                boiler_stabilized = true
+                hud.show_notification("Boiler Stabilized! Return to the Stamp Desk.")
+                current_objective = 3
+                update_objective()
+        else:
+            boiler_stable_time = 0.0
+            
+        hud.update_pressure(boiler_pressure, boiler_stabilized)
+
 func update_objective() -> void:
     match current_objective:
         0:
@@ -61,8 +83,12 @@ func update_objective() -> void:
         1:
             hud.objective_label.text = "Objective: Get Form 27-B stamped at the Stamp Desk."
         2:
-            hud.objective_label.text = "Objective: Submit Stamped Form 27-B to the Permit Registry."
+            hud.objective_label.text = "Objective: The stamper is out of pressure! Pump the Boiler."
         3:
+            hud.objective_label.text = "Objective: The boiler is fixed. Get the stamp."
+        4:
+            hud.objective_label.text = "Objective: Submit Stamped Form 27-B to the Permit Registry."
+        5:
             hud.objective_label.text = "Objective: You got the permit! But the machine is out of order."
 
 func _on_counter_entered(prompt: String) -> void:
@@ -96,34 +122,49 @@ func _on_counter_interacted(counter_id: String) -> void:
                     player_ticket = 0
                     hud.update_queue(serving_number, player_ticket)
                 else:
-                    # player_ticket == serving_number
                     inventory.append("form_27b")
                     current_objective = 1
                     hud.show_notification("You slammed down your ticket. Form 27-B acquired.")
-                    queue_active = false # Stop queue for now
+                    queue_active = false
                     update_objective()
             else:
                 hud.show_notification("The clerk ignores you.")
 
         "stamp_desk":
             if current_objective == 1 and "form_27b" in inventory:
+                hud.show_notification("Clerk: 'Pneumatic stamper has no pressure. Go pump the boiler.'")
+                current_objective = 2
+                update_objective()
+            elif current_objective == 3 and "form_27b" in inventory:
                 inventory.erase("form_27b")
                 inventory.append("stamped_form_27b")
-                current_objective = 2
+                current_objective = 4
                 hud.show_notification("THUD. Form stamped aggressively.")
                 update_objective()
             elif current_objective < 1:
                 hud.show_notification("You don't even have the form yet! Next!")
+            elif current_objective == 2:
+                hud.show_notification("Clerk: 'The boiler is still broken!'")
             else:
                 hud.show_notification("Already stamped. Move along.")
+                
+        "boiler":
+            if current_objective == 2 and not boiler_stabilized:
+                boiler_pressure += 5.0
+                if boiler_pressure > 110.0:
+                    boiler_pressure = 110.0
+            elif boiler_stabilized:
+                hud.show_notification("The boiler is already stable.")
+            else:
+                hud.show_notification("You shouldn't touch that unless authorized.")
 
         "permit_registry":
-            if current_objective == 2 and "stamped_form_27b" in inventory:
+            if current_objective == 4 and "stamped_form_27b" in inventory:
                 inventory.erase("stamped_form_27b")
                 inventory.append("permit")
-                current_objective = 3
+                current_objective = 5
                 hud.show_notification("Permit granted. Note: The machine has been broken since 1847.")
                 update_objective()
-                queue_active = false # Ensure queue stays off
+                queue_active = false
             else:
                 hud.show_notification("Incomplete paperwork. Denied.")

@@ -124,7 +124,8 @@ func _on_counter_interacted(counter_id: String) -> void:
                 else:
                     inventory.append("form_27b")
                     current_objective = 1
-                    hud.show_notification("You slammed down your ticket. Form 27-B acquired.")
+                    $Player.is_encumbered = true
+                    hud.show_notification("Form 27-B acquired. It is printed on an 80lb slab of lead.")
                     queue_active = false
                     update_objective()
             else:
@@ -139,7 +140,7 @@ func _on_counter_interacted(counter_id: String) -> void:
                 inventory.erase("form_27b")
                 inventory.append("stamped_form_27b")
                 current_objective = 4
-                hud.show_notification("THUD. Form stamped aggressively.")
+                hud.show_notification("THUD. Form stamped aggressively. It's still heavy.")
                 update_objective()
             elif current_objective < 1:
                 hud.show_notification("You don't even have the form yet! Next!")
@@ -163,6 +164,7 @@ func _on_counter_interacted(counter_id: String) -> void:
                 inventory.erase("stamped_form_27b")
                 inventory.append("permit")
                 current_objective = 5
+                $Player.is_encumbered = false
                 hud.show_notification("Permit granted. Note: The machine has been broken since 1847.")
                 update_objective()
                 queue_active = false

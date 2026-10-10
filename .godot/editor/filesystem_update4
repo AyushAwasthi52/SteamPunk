@@ -1,3 +1,4 @@
 res://ui/HUD.gd
 res://levels/MainLevel.gd
 res://objects/InteractableCounter.gd
+res://player/Player.gd

@@ -76,6 +76,26 @@ func _process(delta: float) -> void:
             
         hud.update_pressure(boiler_pressure, boiler_stabilized)
 
+func inspector_caught_player() -> void:
+    time_left -= 15.0
+    hud.show_notification("INSPECTOR: NO RUNNING! 15 seconds docked!")
+    
+    # Confiscate forms if they have them
+    if "form_27b" in inventory or "stamped_form_27b" in inventory:
+        inventory.clear()
+        $Player.is_encumbered = false
+        queue_active = true
+        current_objective = 0
+        update_objective()
+        hud.show_notification("INSPECTOR: Contraband paperwork confiscated! Back to the line!")
+    elif "form_27b_rev2" in inventory or "stamped_form_27b_rev2" in inventory:
+        inventory.clear()
+        $Player.is_encumbered = false
+        queue_active = true
+        current_objective = 5
+        update_objective()
+        hud.show_notification("INSPECTOR: Contraband paperwork confiscated! Back to the line!")
+
 func update_objective() -> void:
     match current_objective:
         0:

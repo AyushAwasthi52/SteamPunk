@@ -11,7 +11,26 @@ signal interacted(counter_id: String)
 var player_in_range: bool = false
 
 func _ready() -> void:
-    $ColorRect.color = counter_color
+    if has_node("Sprite2D"):
+        $Sprite2D.modulate = counter_color
+        
+        # Load specific texture based on counter_id
+        var tex_path = "res://assets/desk_texture.jpg"
+        if counter_id == "ticket_dispenser":
+            tex_path = "res://assets/ticket_machine.jpg"
+        elif counter_id == "boiler":
+            tex_path = "res://assets/boiler.jpg"
+        elif counter_id == "shredder":
+            tex_path = "res://assets/shredder.jpg"
+        elif counter_id == "notary_desk" or counter_id == "call_bell":
+            tex_path = "res://assets/notary_desk.jpg"
+        elif counter_id == "permit_registry":
+            tex_path = "res://assets/registry_desk.jpg"
+            
+        var tex = load(tex_path)
+        if tex:
+            $Sprite2D.texture = tex
+            
     body_entered.connect(_on_body_entered)
     body_exited.connect(_on_body_exited)
 

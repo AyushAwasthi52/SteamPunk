@@ -21,9 +21,9 @@ func _physics_process(delta: float) -> void:
     if current_timer >= scramble_interval:
         current_timer = 0.0
         control_map.shuffle()
-        $ColorRect.color = Color(1, 0, 0)
+        $Sprite2D.modulate = Color(1, 0, 0)
         await get_tree().create_timer(0.2).timeout
-        $ColorRect.color = Color(0.2, 0.6, 0.8)
+        $Sprite2D.modulate = Color(1, 1, 1)
 
     var left = control_map[0]
     var right = control_map[1]

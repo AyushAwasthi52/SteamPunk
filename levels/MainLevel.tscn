@@ -27,7 +27,7 @@ counter_color = Color(0.8, 0.2, 0.2, 1)
 [node name="FormsDesk" parent="." instance=ExtResource("3_counter")]
 position = Vector2(-200, -100)
 counter_id = "forms_desk"
-prompt_text = "Press E to request Form 27-B"
+prompt_text = "Press E to request Form"
 counter_color = Color(0.8, 0.5, 0.2, 1)
 
 [node name="StampDesk" parent="." instance=ExtResource("3_counter")]
@@ -47,5 +47,11 @@ position = Vector2(400, 100)
 counter_id = "boiler"
 prompt_text = "Press E to Pump Boiler Pressure"
 counter_color = Color(0.8, 0.4, 0.0, 1)
+
+[node name="Shredder" parent="." instance=ExtResource("3_counter")]
+position = Vector2(0, 200)
+counter_id = "shredder"
+prompt_text = "Press E to Shred Document"
+counter_color = Color(0.3, 0.3, 0.3, 1)
 
 [node name="HUD" parent="." instance=ExtResource("4_hud")]

@@ -6,7 +6,7 @@ var inventory: Array[String] = []
 var current_objective: int = 0
 
 # Timer System
-var time_left: float = 120.0 # 2 minutes
+var time_left: float = 252.0 # 4 minutes 12 seconds
 
 # Queue System
 var serving_number: int = 14
@@ -60,7 +60,7 @@ func _process(delta: float) -> void:
 
     # Boiler mechanics
     if current_objective == 2 and not boiler_stabilized:
-        boiler_pressure -= 15.0 * delta # Decays by 15 per second
+        boiler_pressure -= 15.0 * delta
         if boiler_pressure < 0:
             boiler_pressure = 0
         
@@ -87,8 +87,14 @@ func update_objective() -> void:
         3:
             hud.objective_label.text = "Objective: The boiler is fixed. Get the stamp."
         4:
-            hud.objective_label.text = "Objective: Submit Stamped Form 27-B to the Permit Registry."
+            hud.objective_label.text = "Objective: Form 27-B is obsolete. Go shred it."
         5:
+            hud.objective_label.text = "Objective: Take a new ticket and get Form 27-B/Rev2."
+        6:
+            hud.objective_label.text = "Objective: Get Form 27-B/Rev2 stamped."
+        7:
+            hud.objective_label.text = "Objective: Submit Stamped Form to the Permit Registry."
+        8:
             hud.objective_label.text = "Objective: You got the permit! But the machine is out of order."
 
 func _on_counter_entered(prompt: String) -> void:
@@ -100,8 +106,11 @@ func _on_counter_exited() -> void:
 func _on_counter_interacted(counter_id: String) -> void:
     match counter_id:
         "ticket_dispenser":
-            if current_objective == 0:
+            if current_objective == 0 or current_objective == 5:
                 if player_ticket == 0 or player_ticket < serving_number:
+                    if next_ticket_to_dispense <= serving_number:
+                        next_ticket_to_dispense = serving_number + 5
+                        
                     player_ticket = next_ticket_to_dispense
                     next_ticket_to_dispense += 1
                     hud.show_notification("You took ticket #%d. Don't step out of line." % player_ticket)
@@ -112,7 +121,7 @@ func _on_counter_interacted(counter_id: String) -> void:
                 hud.show_notification("You don't need a ticket anymore.")
 
         "forms_desk":
-            if current_objective == 0:
+            if current_objective == 0 or current_objective == 5:
                 if player_ticket == 0:
                     hud.show_notification("Take a number from the dispenser first!")
                 elif player_ticket > serving_number:
@@ -122,10 +131,16 @@ func _on_counter_interacted(counter_id: String) -> void:
                     player_ticket = 0
                     hud.update_queue(serving_number, player_ticket)
                 else:
-                    inventory.append("form_27b")
-                    current_objective = 1
-                    $Player.is_encumbered = true
-                    hud.show_notification("Form 27-B acquired. It is printed on an 80lb slab of lead.")
+                    if current_objective == 0:
+                        inventory.append("form_27b")
+                        current_objective = 1
+                        $Player.is_encumbered = true
+                        hud.show_notification("Form 27-B acquired. It is printed on an 80lb slab of lead.")
+                    else:
+                        inventory.append("form_27b_rev2")
+                        current_objective = 6
+                        $Player.is_encumbered = true
+                        hud.show_notification("Form 27-B/Rev2 acquired. This one is printed on depleted uranium.")
                     queue_active = false
                     update_objective()
             else:
@@ -137,9 +152,14 @@ func _on_counter_interacted(counter_id: String) -> void:
                 current_objective = 2
                 update_objective()
             elif current_objective == 3 and "form_27b" in inventory:
-                inventory.erase("form_27b")
-                inventory.append("stamped_form_27b")
+                hud.show_notification("Clerk: 'Form 27-B was obsoleted at noon. Go shred it and get Rev2.'")
                 current_objective = 4
+                queue_active = true # Reactivate queue for the second pass
+                update_objective()
+            elif current_objective == 6 and "form_27b_rev2" in inventory:
+                inventory.erase("form_27b_rev2")
+                inventory.append("stamped_form_27b_rev2")
+                current_objective = 7
                 hud.show_notification("THUD. Form stamped aggressively. It's still heavy.")
                 update_objective()
             elif current_objective < 1:
@@ -158,12 +178,22 @@ func _on_counter_interacted(counter_id: String) -> void:
                 hud.show_notification("The boiler is already stable.")
             else:
                 hud.show_notification("You shouldn't touch that unless authorized.")
+                
+        "shredder":
+            if current_objective == 4 and "form_27b" in inventory:
+                inventory.erase("form_27b")
+                current_objective = 5
+                $Player.is_encumbered = false
+                hud.show_notification("Form shredded. You feel physically lighter, but spiritually heavier.")
+                update_objective()
+            else:
+                hud.show_notification("You have nothing that needs shredding right now.")
 
         "permit_registry":
-            if current_objective == 4 and "stamped_form_27b" in inventory:
-                inventory.erase("stamped_form_27b")
+            if current_objective == 7 and "stamped_form_27b_rev2" in inventory:
+                inventory.erase("stamped_form_27b_rev2")
                 inventory.append("permit")
-                current_objective = 5
+                current_objective = 8
                 $Player.is_encumbered = false
                 hud.show_notification("Permit granted. Note: The machine has been broken since 1847.")
                 update_objective()

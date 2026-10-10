@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://player/Player.gd" id="1_player"]
 [ext_resource type="Shader" path="res://shaders/RemoveBlack.gdshader" id="2_shader"]
-[ext_resource type="Texture2D" uid="uid://b8y1f" path="res://assets/player_texture.jpg" id="3_tex"]
+[ext_resource type="Texture2D" path="res://assets/player_texture.jpg" id="3_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(40, 80)

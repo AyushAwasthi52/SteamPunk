@@ -29,7 +29,7 @@ func show_notification(text: String) -> void:
         notification_label.text = ""
 
 func update_timer(time_left: float) -> void:
-    var minutes = int(time_left) / 60
+    var minutes = int(time_left / 60.0)
     var seconds = int(time_left) % 60
     timer_label.text = "Ministry Closes: %02d:%02d" % [minutes, seconds]
 

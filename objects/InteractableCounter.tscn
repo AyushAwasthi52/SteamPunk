@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://objects/InteractableCounter.gd" id="1_counter"]
 [ext_resource type="Shader" path="res://shaders/RemoveBlack.gdshader" id="2_shader"]
-[ext_resource type="Texture2D" uid="uid://d8y1f" path="res://assets/desk_texture.jpg" id="3_tex"]
+[ext_resource type="Texture2D" path="res://assets/desk_texture.jpg" id="3_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
 size = Vector2(128, 80)

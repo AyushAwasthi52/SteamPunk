@@ -20,65 +20,65 @@ script = ExtResource("1_main")
 
 [node name="Floor" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_1")
-offset_left = -1000.0
-offset_top = -1000.0
-offset_right = 1000.0
-offset_bottom = 1000.0
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2000.0
+offset_bottom = 2000.0
 color = Color(0.1, 0.2, 0.3, 1)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(0, 0)
 
 [node name="TicketDispenser" parent="." instance=ExtResource("3_counter")]
-position = Vector2(-400, 100)
+position = Vector2(-800, 200)
 counter_id = "ticket_dispenser"
 prompt_text = "Press E to Take a Number"
 counter_color = Color(0.8, 0.2, 0.2, 1)
 
 [node name="FormsDesk" parent="." instance=ExtResource("3_counter")]
-position = Vector2(-200, -100)
+position = Vector2(-500, -350)
 counter_id = "forms_desk"
 prompt_text = "Press E to request Form"
 counter_color = Color(0.8, 0.5, 0.2, 1)
 
 [node name="StampDesk" parent="." instance=ExtResource("3_counter")]
-position = Vector2(200, -100)
+position = Vector2(500, -350)
 counter_id = "stamp_desk"
 prompt_text = "Press E to get Form Stamped"
 counter_color = Color(0.2, 0.8, 0.5, 1)
 
 [node name="PermitRegistry" parent="." instance=ExtResource("3_counter")]
-position = Vector2(0, -300)
+position = Vector2(0, -600)
 counter_id = "permit_registry"
 prompt_text = "Press E to submit Stamped Form"
 counter_color = Color(0.5, 0.2, 0.8, 1)
 
 [node name="Boiler" parent="." instance=ExtResource("3_counter")]
-position = Vector2(400, 100)
+position = Vector2(800, 200)
 counter_id = "boiler"
 prompt_text = "Press E to Pump Boiler Pressure"
 counter_color = Color(0.8, 0.4, 0.0, 1)
 
 [node name="Shredder" parent="." instance=ExtResource("3_counter")]
-position = Vector2(0, 200)
+position = Vector2(0, 400)
 counter_id = "shredder"
 prompt_text = "Press E to Shred Document"
 counter_color = Color(0.3, 0.3, 0.3, 1)
 
 [node name="NotaryDesk" parent="." instance=ExtResource("3_counter")]
-position = Vector2(-200, 300)
+position = Vector2(-500, 600)
 counter_id = "notary_desk"
 prompt_text = "Press E to get Notary Signature"
 counter_color = Color(0.9, 0.9, 0.2, 1)
 
 [node name="CallBell" parent="." instance=ExtResource("3_counter")]
-position = Vector2(-300, 300)
+position = Vector2(-700, 600)
 counter_id = "call_bell"
 prompt_text = "Press E to Ring Bell"
 counter_color = Color(1.0, 0.8, 0.0, 1)
 
 [node name="SupplyCloset" parent="." instance=ExtResource("3_counter")]
-position = Vector2(400, 300)
+position = Vector2(800, 600)
 counter_id = "supply_closet"
 prompt_text = "Press E to Search Supply Closet"
 counter_color = Color(0.2, 0.2, 0.6, 1)

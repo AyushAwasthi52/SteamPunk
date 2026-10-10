@@ -2,6 +2,8 @@ extends Node2D
 
 @onready var hud: CanvasLayer = $HUD
 
+var win_screen_scene = preload("res://ui/WinScreen.tscn")
+
 var inventory: Array[String] = []
 var current_objective: int = 0
 
@@ -235,6 +237,7 @@ func _on_counter_interacted(counter_id: String) -> void:
                 hud.show_notification("Permit granted. Note: The machine has been broken since 1847.")
                 update_objective()
                 queue_active = false
+                show_win_screen()
             else:
                 hud.show_notification("Incomplete paperwork. Denied.")
                 
@@ -281,3 +284,8 @@ func _on_counter_interacted(counter_id: String) -> void:
                 update_objective()
             else:
                 hud.show_notification("The closet is locked.")
+
+func show_win_screen() -> void:
+    var win_screen = win_screen_scene.instantiate()
+    add_child(win_screen)
+    get_tree().paused = true

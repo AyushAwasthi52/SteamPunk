@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://objects/Inspector.gd" id="1_insp"]
 [ext_resource type="Shader" path="res://shaders/RemoveBlack.gdshader" id="2_shader"]
-[ext_resource type="Texture2D" uid="uid://c8y1f" path="res://assets/inspector_texture.jpg" id="3_tex"]
+[ext_resource type="Texture2D" path="res://assets/inspector_texture.jpg" id="3_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(40, 80)

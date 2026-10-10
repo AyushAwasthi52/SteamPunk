@@ -1,0 +1,16 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1791645799
+ARCHITECTURE.md::TextFile::-1::1791645669::0::1::::<><>::
+GDD.md::TextFile::-1::1791645658::0::1::::<><>::
+::res://levels/::1791645785
+MainLevel.gd::GDScript::-1::1791645775::0::1::::<>Node2D<>::
+MainLevel.tscn::PackedScene::-1::1791645785::0::1::::<><>::res://levels/MainLevel.gd<>res://player/Player.tscn<>res://objects/InteractableCounter.tscn<>res://ui/HUD.tscn
+::res://objects/::1791645746
+InteractableCounter.gd::GDScript::-1::1791645737::0::1::::<>Area2D<>::
+InteractableCounter.tscn::PackedScene::-1::1791645746::0::1::::<><>::res://objects/InteractableCounter.gd
+::res://player/::1791645729
+Player.gd::GDScript::-1::1791645721::0::1::::<>CharacterBody2D<>::
+Player.tscn::PackedScene::-1::1791645729::0::1::::<><>::res://player/Player.gd
+::res://ui/::1791645766
+HUD.gd::GDScript::-1::1791645755::0::1::::<>CanvasLayer<>::
+HUD.tscn::PackedScene::-1::1791645766::0::1::::<><>::res://ui/HUD.gd

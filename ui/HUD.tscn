@@ -8,7 +8,7 @@ script = ExtResource("1_hud")
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_left = 16.0
 offset_top = 16.0
-offset_right = 400.0
+offset_right = 700.0
 offset_bottom = 150.0
 
 [node name="ObjectiveLabel" type="Label" parent="VBoxContainer"]
@@ -26,3 +26,33 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
 theme_override_font_sizes/font_size = 20
 text = "Notification"
+
+[node name="RightPanel" type="VBoxContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 150.0
+grow_horizontal = 0
+
+[node name="TimerLabel" type="Label" parent="RightPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Ministry Closes: 05:00"
+horizontal_alignment = 2
+
+[node name="QueueLabel" type="Label" parent="RightPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now Serving: 14"
+horizontal_alignment = 2
+
+[node name="TicketLabel" type="Label" parent="RightPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Your Ticket: None"
+horizontal_alignment = 2

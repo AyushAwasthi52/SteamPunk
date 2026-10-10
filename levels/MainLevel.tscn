@@ -1,12 +1,9 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://levels/MainLevel.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://player/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://objects/InteractableCounter.tscn" id="3_counter"]
 [ext_resource type="PackedScene" path="res://ui/HUD.tscn" id="4_hud"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
-size = Vector2(1000, 50)
 
 [node name="MainLevel" type="Node2D"]
 script = ExtResource("1_main")
@@ -21,20 +18,28 @@ color = Color(0.1, 0.2, 0.3, 1)
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(0, 0)
 
-[node name="InteractableCounter" parent="." instance=ExtResource("3_counter")]
+[node name="TicketDispenser" parent="." instance=ExtResource("3_counter")]
+position = Vector2(-400, 100)
+counter_id = "ticket_dispenser"
+prompt_text = "Press E to Take a Number"
+counter_color = Color(0.8, 0.2, 0.2, 1)
+
+[node name="FormsDesk" parent="." instance=ExtResource("3_counter")]
+position = Vector2(-200, -100)
+counter_id = "forms_desk"
+prompt_text = "Press E to request Form 27-B"
+counter_color = Color(0.8, 0.5, 0.2, 1)
+
+[node name="StampDesk" parent="." instance=ExtResource("3_counter")]
 position = Vector2(200, -100)
+counter_id = "stamp_desk"
+prompt_text = "Press E to get Form Stamped"
+counter_color = Color(0.2, 0.8, 0.5, 1)
+
+[node name="PermitRegistry" parent="." instance=ExtResource("3_counter")]
+position = Vector2(0, -300)
+counter_id = "permit_registry"
+prompt_text = "Press E to submit Stamped Form"
+counter_color = Color(0.5, 0.2, 0.8, 1)
 
 [node name="HUD" parent="." instance=ExtResource("4_hud")]
-
-[node name="WallTop" type="StaticBody2D" parent="."]
-position = Vector2(0, -300)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallTop"]
-shape = SubResource("RectangleShape2D_wall")
-
-[node name="ColorRect" type="ColorRect" parent="WallTop"]
-offset_left = -500.0
-offset_top = -25.0
-offset_right = 500.0
-offset_bottom = 25.0
-color = Color(0.2, 0.2, 0.2, 1)
